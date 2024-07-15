@@ -13,5 +13,6 @@ const getEnvFileName = () => {
     throw new Error("'NODE_ENV' is not set");
   }
 
-  return env.toLocaleLowerCase() === "prod" ? ".env.prod" : ".env.dev";
+  // return env.toLocaleLowerCase() === "prod" ? ".env.prod" : ".env.dev";
+  return ".env";
 };
