@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Structural classes
+model SysEntity {
+  id          Int    @id @default(autoincrement())
+  uniqueCode  String @unique @map("unique_code")
+  description String
+
+  SysCategory SysCategory[]
+  SysTypes    SysTypes[]
+  SysStatus   SysStatus[]
+}
+
+model SysCategory {
+  id          Int       @id @default(autoincrement())
+  uniqueCode  String    @unique @map("unique_code")
+  description String
+  SysEntity   SysEntity @relation(fields: [idSysEntity], references: [id])
+  idSysEntity Int
+}
+
+model SysStatus {
+  id          Int       @id @default(autoincrement())
+  uniqueCode  String    @unique @map("unique_code")
+  description String
+  SysEntity   SysEntity @relation(fields: [idSysEntity], references: [id])
+  idSysEntity Int
+
+  Order Order[]
+}
+
+model SysTypes {
+  id          Int       @id @default(autoincrement())
+  uniqueCode  String    @unique @map("unique_code")
+  description String
+  SysEntity   SysEntity @relation(fields: [idSysEntity], references: [id])
+  idSysEntity Int
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+
+  Order Order[]
+}
+
+model Item {
+  id          Int    @id @default(autoincrement())
+  uniqueCode  String @unique @map("unique_code")
+  name        String
+  description String?
+
+  Order Order[]
+}
+
+model Order {
+  id         Int   @id @default(autoincrement())
+  user       User  @relation(fields: [userId], references: [id])
+  userId     Int
+  subtotal   Float
+  tax        Float
+  shipping   Float
+  discount   Float
+  totalPrice Float
+
+  items  Item[]
+  status SysStatus[]
+}
